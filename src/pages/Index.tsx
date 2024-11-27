@@ -3,20 +3,26 @@ import Header from '@/components/Header';
 import MenuItem from '@/components/MenuItem';
 import DeliveryCheck from '@/components/DeliveryCheck';
 import Cart from '@/components/Cart';
+import Testimonials from '@/components/Testimonials';
 
 const MENU_ITEMS = {
   salgadas: [
-    { id: 1, name: 'Tradicional', price: 8.00 },
-    { id: 2, name: 'Coco & Queijo Coalho', price: 10.00 },
-    { id: 3, name: 'Banana & Queijo Coalho', price: 10.00 },
-    { id: 4, name: 'Frango & Mussarela', price: 12.00 },
+    { id: 1, name: 'Tradicional', price: 8.00, description: 'Goma rendada com manteiga' },
+    { id: 2, name: 'Coco & Queijo Coalho', price: 10.00, description: 'Goma rendada, coco ralado fresco e queijo coalho artesanal' },
+    { id: 3, name: 'Banana & Queijo Coalho', price: 10.00, description: 'Goma rendada, banana frita e queijo coalho artesanal' },
+    { id: 4, name: 'Frango & Mussarela', price: 12.00, description: 'Goma rendada, frango desfiado temperado e queijo mussarela' },
   ],
   doces: [
-    { id: 5, name: 'Coco & Doce de Leite', price: 10.00 },
-    { id: 6, name: 'Morango & Doce de Leite', price: 12.00 },
-    { id: 7, name: 'Banana & Doce de Leite', price: 10.00 },
+    { id: 5, name: 'Coco & Doce de Leite', price: 10.00, description: 'Goma rendada, coco ralado fresco e doce de leite caseiro' },
+    { id: 6, name: 'Morango & Doce de Leite', price: 12.00, description: 'Goma rendada, morango fresco e doce de leite caseiro' },
+    { id: 7, name: 'Banana & Doce de Leite', price: 10.00, description: 'Goma rendada, banana caramelizada e doce de leite caseiro' },
   ],
 };
+
+const EXTRAS = [
+  { id: 'extra-cheese', name: 'Queijo Coalho Extra', price: 3.00 },
+  { id: 'extra-dulce', name: 'Doce de Leite Extra', price: 2.00 },
+];
 
 const Index = () => {
   const [cart, setCart] = useState<Record<number, number>>({});
@@ -53,9 +59,17 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl font-bold mb-2">Bem-vindo à Payoca!</h2>
-          <p className="text-text-secondary text-lg">
+          <p className="text-text-secondary text-lg mb-4">
             Escolha sua tapioca favorita e receba no conforto de sua casa!
           </p>
+          <div className="bg-primary/10 p-4 rounded-lg inline-block">
+            <p className="font-semibold text-secondary">
+              Tapiocas feitas com Goma Rendada e Queijo Coalho de verdade!
+            </p>
+            <p className="text-sm mt-2">
+              Entrega rápida e prática na parte alta de Maceió
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-8">
@@ -66,6 +80,7 @@ const Index = () => {
                 <MenuItem
                   key={item.id}
                   name={item.name}
+                  description={item.description}
                   price={item.price}
                   onAdd={() => handleAddItem(item.id)}
                   onRemove={() => handleRemoveItem(item.id)}
@@ -82,6 +97,7 @@ const Index = () => {
                 <MenuItem
                   key={item.id}
                   name={item.name}
+                  description={item.description}
                   price={item.price}
                   onAdd={() => handleAddItem(item.id)}
                   onRemove={() => handleRemoveItem(item.id)}
@@ -96,6 +112,8 @@ const Index = () => {
           onDeliveryPrice={setDeliveryPrice}
           totalItems={totalItems}
         />
+
+        <Testimonials />
       </main>
 
       <Cart
