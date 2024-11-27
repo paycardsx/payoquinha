@@ -28,6 +28,27 @@ h1, h2, h3, h4, h5, h6 {
   @apply bg-primary/10 text-secondary py-2 px-4 text-center font-montserrat text-sm fixed top-0 left-0 right-0 z-50;
 }
 
+/* Toast customization */
+[role="status"].toast {
+  @apply bg-primary text-secondary border-none shadow-lg;
+  top: 1rem !important;
+}
+
+[role="status"].toast[data-state="open"] {
+  animation: slideDown 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[role="status"].toast[data-state="closed"] {
+  animation: hide 100ms ease-in;
+}
+
+.toaster {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
@@ -35,4 +56,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .float-animation {
   animation: float 3s ease-in-out infinite;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
