@@ -17,7 +17,7 @@ const Header = () => {
       <motion.header 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-20 shadow-xl mt-10 relative overflow-hidden"
+        className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 py-12 shadow-xl mt-10 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-10 bg-cover bg-center" />
         <div className="container mx-auto px-4 relative">
@@ -27,12 +27,18 @@ const Header = () => {
             transition={{ delay: 0.2 }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-secondary mb-6 drop-shadow-lg">
-              Payoca
-              <span className="block text-xl md:text-2xl font-normal mt-2 text-secondary/90">
-                Tapiocas com Goma Rendada
-              </span>
-            </h1>
+            <motion.div 
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="flex justify-center mb-6"
+            >
+              <img 
+                src="/payoca-logo.png" 
+                alt="Payoca Logo" 
+                className="w-48 md:w-64 h-auto drop-shadow-lg animate-float"
+              />
+            </motion.div>
             
             <div className="mt-8 space-y-3">
               <motion.p 
