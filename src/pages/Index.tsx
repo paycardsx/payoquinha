@@ -6,6 +6,7 @@ import Cart from '@/components/Cart';
 import Testimonials from '@/components/Testimonials';
 import Footer from '@/components/Footer';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const MENU_ITEMS = {
   salgadas: [
@@ -61,19 +62,41 @@ const Index = () => {
   const [deliveryPrice, setDeliveryPrice] = useState(5);
 
   const handleAddItem = (id: number) => {
-    setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
-  };
-
-  const handleRemoveItem = (id: number) => {
     setCart(prev => {
-      const newCart = { ...prev };
-      if (newCart[id] > 1) {
-        newCart[id]--;
-      } else {
-        delete newCart[id];
+      const newCart = { ...prev, [id]: (prev[id] || 0) + 1 };
+      const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.id === id);
+      if (item) {
+        toast.success(`${item.name} adicionado ao carrinho`);
       }
       return newCart;
     });
+  };
+
+  const handleUpdateQuantity = (itemName: string, newQuantity: number) => {
+    const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.name === itemName);
+    if (!item) return;
+
+    setCart(prev => {
+      if (newQuantity === 0) {
+        const { [item.id]: removed, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [item.id]: newQuantity };
+    });
+  };
+
+  const handleRemoveItem = (itemName: string) => {
+    const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.name === itemName);
+    if (!item) return;
+
+    setCart(prev => {
+      const { [item.id]: removed, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const handleClearCart = () => {
+    setCart({});
   };
 
   const container = {
@@ -173,6 +196,9 @@ const Index = () => {
           return item ? { name: item.name, quantity, price: item.price } : null;
         }).filter(Boolean) as Array<{ name: string; quantity: number; price: number }>}
         deliveryPrice={deliveryPrice}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+        onClearCart={handleClearCart}
       />
 
       <Footer />
