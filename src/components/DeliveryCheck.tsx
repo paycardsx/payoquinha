@@ -67,7 +67,7 @@ const DeliveryCheck = ({ onDeliveryPrice, totalItems }: DeliveryCheckProps) => {
   }, [selectedNeighborhood, totalItems, onDeliveryPrice]);
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-lg space-y-4">
+    <div className="bg-white rounded-lg p-6 shadow-lg space-y-4 animate-fade-in">
       <h3 className="text-xl font-semibold mb-4 text-primary">Consultar Entrega</h3>
       
       <Select onValueChange={setSelectedNeighborhood} value={selectedNeighborhood}>

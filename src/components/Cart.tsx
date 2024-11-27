@@ -41,7 +41,7 @@ const Cart = ({ items, deliveryPrice }: CartProps) => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm w-full">
+    <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm w-full animate-scale-in">
       <div className="flex items-center gap-2 mb-4">
         <ShoppingCart className="text-primary" />
         <h3 className="text-lg font-semibold">Seu Pedido</h3>
