@@ -4,6 +4,7 @@ import MenuItem from '@/components/MenuItem';
 import DeliveryCheck from '@/components/DeliveryCheck';
 import Cart from '@/components/Cart';
 import Testimonials from '@/components/Testimonials';
+import Footer from '@/components/Footer';
 
 const MENU_ITEMS = {
   salgadas: [
@@ -79,38 +80,24 @@ const Index = () => {
     });
   };
 
-  const cartItems = Object.entries(cart).map(([id, quantity]) => {
-    const allItems = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces];
-    const item = allItems.find(item => item.id === parseInt(id));
-    return item ? { name: item.name, quantity, price: item.price } : null;
-  }).filter(Boolean) as Array<{ name: string; quantity: number; price: number }>;
-
-  const totalItems = Object.values(cart).reduce((acc, curr) => acc + curr, 0);
-
   return (
-    <div className="min-h-screen pb-32">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold mb-2">Bem-vindo à Payoca!</h2>
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="text-center mb-12 animate-fade-in">
+          <h2 className="text-2xl font-bold text-secondary mb-4">
+            Saboreie nossas deliciosas tapiocas!
+          </h2>
           <p className="text-text-secondary text-lg mb-4">
-            Escolha sua tapioca favorita e receba no conforto de sua casa!
+            Escolha sua tapioca favorita e receba no conforto da sua casa
           </p>
-          <div className="bg-primary/10 p-4 rounded-lg inline-block">
-            <p className="font-semibold text-secondary">
-              Tapiocas feitas com Goma Rendada e Queijo Coalho de verdade!
-            </p>
-            <p className="text-sm mt-2">
-              Entrega rápida e prática na parte alta de Maceió
-            </p>
-          </div>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div className="col-span-full">
-            <h2 className="text-2xl font-bold mb-4">Tapiocas Salgadas</h2>
-            <div className="grid gap-4">
+            <h2 className="section-title">Tapiocas Salgadas</h2>
+            <div className="grid gap-6">
               {MENU_ITEMS.salgadas.map((item) => (
                 <MenuItem
                   key={item.id}
@@ -126,8 +113,8 @@ const Index = () => {
           </div>
 
           <div className="col-span-full">
-            <h2 className="text-2xl font-bold mb-4">Tapiocas Doces</h2>
-            <div className="grid gap-4">
+            <h2 className="section-title">Tapiocas Doces</h2>
+            <div className="grid gap-6">
               {MENU_ITEMS.doces.map((item) => (
                 <MenuItem
                   key={item.id}
@@ -143,18 +130,28 @@ const Index = () => {
           </div>
         </div>
 
-        <DeliveryCheck
-          onDeliveryPrice={setDeliveryPrice}
-          totalItems={totalItems}
-        />
+        <div className="mt-12">
+          <DeliveryCheck
+            onDeliveryPrice={setDeliveryPrice}
+            totalItems={Object.values(cart).reduce((acc, curr) => acc + curr, 0)}
+          />
+        </div>
 
-        <Testimonials />
+        <div className="mt-16">
+          <Testimonials />
+        </div>
       </main>
 
       <Cart
-        items={cartItems}
+        items={Object.entries(cart).map(([id, quantity]) => {
+          const allItems = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces];
+          const item = allItems.find(item => item.id === parseInt(id));
+          return item ? { name: item.name, quantity, price: item.price } : null;
+        }).filter(Boolean) as Array<{ name: string; quantity: number; price: number }>}
         deliveryPrice={deliveryPrice}
       />
+
+      <Footer />
     </div>
   );
 };
