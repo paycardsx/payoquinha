@@ -15,4 +15,4 @@ export const NEIGHBORHOODS = [
   { name: 'Clima Bom', distance: 5.5, time: 16, available: false, freight: 0 },
   { name: 'Benedito Bentes 1', distance: 6, time: 18, available: true, freight: 10 },
   { name: 'Outros Bairros', distance: 0, time: 0, available: false, freight: 0 },
-] as const;
+];

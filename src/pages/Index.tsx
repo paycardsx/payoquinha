@@ -58,13 +58,14 @@ const MENU_ITEMS = {
 };
 
 const Index = () => {
-  const [cart, setCart] = useState<Record<number, number>>({});
+  const [cart, setCart] = useState<Record<string, number>>({});
   const [deliveryPrice, setDeliveryPrice] = useState(5);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
 
   const handleAddItem = (id: number) => {
+    const itemId = id.toString();
     setCart(prev => {
-      const newCart = { ...prev, [id]: (prev[id] || 0) + 1 };
+      const newCart = { ...prev, [itemId]: (prev[itemId] || 0) + 1 };
       const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.id === id);
       if (item) {
         toast.success(`${item.name} adicionado ao carrinho`);
