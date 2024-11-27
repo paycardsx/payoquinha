@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { ShoppingCart, X, ChevronUp, Trash2, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, X, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import PaymentSelector from './PaymentSelector';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import CartContent from './CartContent';
+import DeliveryAddressForm, { DeliveryAddress } from './DeliveryAddressForm';
 
-interface CartItem {
+export interface CartItem {
   name: string;
   quantity: number;
   price: number;
@@ -15,6 +17,7 @@ interface CartItem {
 interface CartProps {
   items: CartItem[];
   deliveryPrice: number;
+  selectedNeighborhood: string;
   onUpdateQuantity?: (itemName: string, newQuantity: number) => void;
   onRemoveItem?: (itemName: string) => void;
   onClearCart?: () => void;
@@ -27,62 +30,19 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
-const CartItemRow = ({ item, onUpdate, onRemove }: { 
-  item: CartItem; 
-  onUpdate: (name: string, quantity: number) => void;
-  onRemove: (name: string) => void;
-}) => {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      className="flex items-center justify-between mb-3 p-2 hover:bg-surface rounded-lg transition-colors group"
-    >
-      <div className="flex items-center gap-3 flex-1">
-        <div className="flex flex-col">
-          <span className="font-medium text-secondary">{item.name}</span>
-          <span className="text-sm text-text-secondary">{formatCurrency(item.price)}</span>
-        </div>
-      </div>
-      
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1 bg-surface rounded-full">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 hover:bg-primary/20 rounded-full"
-            onClick={() => onUpdate(item.name, item.quantity - 1)}
-          >
-            <Minus className="h-4 w-4 text-secondary" />
-          </Button>
-          <span className="w-8 text-center font-medium text-secondary">{item.quantity}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 hover:bg-primary/20 rounded-full"
-            onClick={() => onUpdate(item.name, item.quantity + 1)}
-          >
-            <Plus className="h-4 w-4 text-secondary" />
-          </Button>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 rounded-full"
-          onClick={() => onRemove(item.name)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </div>
-    </motion.div>
-  );
-};
-
-const Cart = ({ items, deliveryPrice, onUpdateQuantity, onRemoveItem, onClearCart }: CartProps) => {
+const Cart = ({ 
+  items, 
+  deliveryPrice, 
+  selectedNeighborhood,
+  onUpdateQuantity, 
+  onRemoveItem, 
+  onClearCart 
+}: CartProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('pix');
   const [cashAmount, setCashAmount] = useState(0);
+  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress | null>(null);
+  const [showAddressForm, setShowAddressForm] = useState(false);
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const total = subtotal + deliveryPrice;
@@ -109,7 +69,18 @@ const Cart = ({ items, deliveryPrice, onUpdateQuantity, onRemoveItem, onClearCar
     setIsExpanded(false);
   };
 
+  const handleAddressSubmit = (address: DeliveryAddress) => {
+    setDeliveryAddress(address);
+    setShowAddressForm(false);
+    toast.success('Endereço de entrega salvo!');
+  };
+
   const formatOrderText = () => {
+    if (!deliveryAddress) {
+      toast.error('Por favor, preencha o endereço de entrega');
+      return null;
+    }
+
     let text = "Olá! Gostaria de fazer um pedido:\n\n";
     items.forEach(item => {
       text += `${item.quantity}x ${item.name} - ${formatCurrency(item.price * item.quantity)}\n`;
@@ -117,6 +88,13 @@ const Cart = ({ items, deliveryPrice, onUpdateQuantity, onRemoveItem, onClearCar
     text += `\nSubtotal: ${formatCurrency(subtotal)}`;
     text += `\nEntrega: ${formatCurrency(deliveryPrice)}`;
     text += `\nTotal: ${formatCurrency(total)}`;
+    text += `\n\nEndereço de entrega:`;
+    text += `\nRua: ${deliveryAddress.street}, ${deliveryAddress.number}`;
+    if (deliveryAddress.complement) {
+      text += `\nComplemento: ${deliveryAddress.complement}`;
+    }
+    text += `\nBairro: ${deliveryAddress.neighborhood}`;
+    text += `\nCEP: ${deliveryAddress.zipCode}`;
     text += `\n\nForma de pagamento: ${paymentMethod.toUpperCase()}`;
     if (paymentMethod === 'cash') {
       text += `\nTroco para: ${formatCurrency(cashAmount)}`;
@@ -130,7 +108,17 @@ const Cart = ({ items, deliveryPrice, onUpdateQuantity, onRemoveItem, onClearCar
       toast.error('Adicione itens ao carrinho primeiro!');
       return;
     }
-    window.open(`https://wa.me/5582994150378?text=${formatOrderText()}`, '_blank');
+
+    if (!deliveryAddress) {
+      toast.error('Por favor, preencha o endereço de entrega');
+      setShowAddressForm(true);
+      return;
+    }
+
+    const orderText = formatOrderText();
+    if (orderText) {
+      window.open(`https://wa.me/5582994150378?text=${orderText}`, '_blank');
+    }
   };
 
   return (
@@ -183,67 +171,102 @@ const Cart = ({ items, deliveryPrice, onUpdateQuantity, onRemoveItem, onClearCar
               </div>
             </div>
             
-            <div className="p-4 max-h-[70vh] overflow-y-auto">
-              <AnimatePresence mode="popLayout">
-                {items.map((item) => (
-                  <CartItemRow
-                    key={item.name}
-                    item={item}
-                    onUpdate={handleUpdateQuantity}
-                    onRemove={handleRemoveItem}
-                  />
-                ))}
-              </AnimatePresence>
+            {showAddressForm ? (
+              <div className="p-4">
+                <h4 className="text-lg font-semibold mb-4">Endereço de Entrega</h4>
+                <DeliveryAddressForm
+                  selectedNeighborhood={selectedNeighborhood}
+                  onAddressSubmit={handleAddressSubmit}
+                />
+              </div>
+            ) : (
+              <>
+                <CartContent
+                  items={items}
+                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemoveItem={handleRemoveItem}
+                />
 
-              {items.length === 0 && (
-                <div className="text-center py-8 text-text-secondary">
-                  Seu carrinho está vazio
-                </div>
-              )}
-              
-              {items.length > 0 && (
-                <>
-                  <div className="border-t mt-4 pt-4 space-y-2">
-                    <div className="flex justify-between text-sm text-text-secondary">
-                      <span>Subtotal</span>
-                      <span>{formatCurrency(subtotal)}</span>
+                {items.length > 0 && (
+                  <div className="p-4">
+                    <div className="border-t pt-4 space-y-2">
+                      <div className="flex justify-between text-sm text-text-secondary">
+                        <span>Subtotal</span>
+                        <span>{formatCurrency(subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-text-secondary">
+                        <span>Entrega</span>
+                        <span>{formatCurrency(deliveryPrice)}</span>
+                      </div>
+                      <div className="flex justify-between font-bold text-lg text-secondary pt-2">
+                        <span>Total</span>
+                        <span>{formatCurrency(total)}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm text-text-secondary">
-                      <span>Entrega</span>
-                      <span>{formatCurrency(deliveryPrice)}</span>
-                    </div>
-                    <div className="flex justify-between font-bold text-lg text-secondary pt-2">
-                      <span>Total</span>
-                      <span>{formatCurrency(total)}</span>
-                    </div>
+
+                    {!deliveryAddress && (
+                      <Button
+                        className="w-full mt-6"
+                        onClick={() => setShowAddressForm(true)}
+                      >
+                        Adicionar Endereço de Entrega
+                      </Button>
+                    )}
+
+                    {deliveryAddress && (
+                      <>
+                        <div className="mt-6 p-3 bg-surface rounded-lg">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="font-semibold">Endereço de Entrega</h4>
+                              <p className="text-sm text-text-secondary mt-1">
+                                {deliveryAddress.street}, {deliveryAddress.number}
+                                {deliveryAddress.complement && ` - ${deliveryAddress.complement}`}
+                                <br />
+                                {deliveryAddress.neighborhood} - CEP: {deliveryAddress.zipCode}
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setShowAddressForm(true)}
+                            >
+                              Editar
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="mt-6 border-t pt-4">
+                          <PaymentSelector
+                            onPaymentMethodChange={setPaymentMethod}
+                            onCashAmountChange={setCashAmount}
+                          />
+                        </div>
+
+                        {paymentMethod === 'cash' && change > 0 && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-4 p-3 bg-primary/10 rounded-lg"
+                          >
+                            <p className="font-semibold text-secondary">
+                              Troco: {formatCurrency(change)}
+                            </p>
+                          </motion.div>
+                        )}
+
+                        <Button
+                          className="w-full mt-6 bg-primary hover:bg-primary/90 text-secondary font-semibold h-12 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                          onClick={handleWhatsAppClick}
+                        >
+                          Enviar Pedido pelo WhatsApp
+                        </Button>
+                      </>
+                    )}
                   </div>
-
-                  <div className="mt-6 border-t pt-4">
-                    <PaymentSelector
-                      onPaymentMethodChange={setPaymentMethod}
-                      onCashAmountChange={setCashAmount}
-                    />
-                  </div>
-
-                  {paymentMethod === 'cash' && change > 0 && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-4 p-3 bg-primary/10 rounded-lg"
-                    >
-                      <p className="font-semibold text-secondary">Troco: {formatCurrency(change)}</p>
-                    </motion.div>
-                  )}
-
-                  <Button
-                    className="w-full mt-6 bg-primary hover:bg-primary/90 text-secondary font-semibold h-12 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                    onClick={handleWhatsAppClick}
-                  >
-                    Enviar Pedido pelo WhatsApp
-                  </Button>
-                </>
-              )}
-            </div>
+                )}
+              </>
+            )}
           </motion.div>
         ) : (
           <button

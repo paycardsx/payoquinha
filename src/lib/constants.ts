@@ -1,0 +1,18 @@
+export const NEIGHBORHOODS = [
+  { name: 'Antares', distance: 1, time: 3, available: true, freight: 5 },
+  { name: 'Santa Lúcia', distance: 1.5, time: 5, available: true, freight: 5 },
+  { name: 'Canaã', distance: 2, time: 6, available: true, freight: 5 },
+  { name: 'Cleto Marques Luz', distance: 2, time: 7, available: true, freight: 5 },
+  { name: 'Grand Jardim', distance: 2.5, time: 8, available: true, freight: 5 },
+  { name: 'Aldebaran', distance: 3, time: 9, available: true, freight: 7 },
+  { name: 'Serraria', distance: 3, time: 10, available: true, freight: 7 },
+  { name: 'Eustáquio', distance: 3, time: 9, available: true, freight: 7 },
+  { name: 'Salvador Lyra', distance: 3.5, time: 10, available: true, freight: 7 },
+  { name: 'Tabuleiro do Martins', distance: 4, time: 12, available: true, freight: 7 },
+  { name: 'Santos Dumont', distance: 4, time: 12, available: true, freight: 7 },
+  { name: 'Graciliano Ramos', distance: 4.5, time: 13, available: true, freight: 10 },
+  { name: 'Cidade Universitária', distance: 5, time: 15, available: true, freight: 10 },
+  { name: 'Clima Bom', distance: 5.5, time: 16, available: false, freight: 0 },
+  { name: 'Benedito Bentes 1', distance: 6, time: 18, available: true, freight: 10 },
+  { name: 'Outros Bairros', distance: 0, time: 0, available: false, freight: 0 },
+] as const;

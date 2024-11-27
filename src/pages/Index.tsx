@@ -60,6 +60,7 @@ const MENU_ITEMS = {
 const Index = () => {
   const [cart, setCart] = useState<Record<number, number>>({});
   const [deliveryPrice, setDeliveryPrice] = useState(5);
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
 
   const handleAddItem = (id: number) => {
     setCart(prev => {
@@ -99,14 +100,9 @@ const Index = () => {
     setCart({});
   };
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
+  const handleDeliveryCheck = (price: number, neighborhood: string) => {
+    setDeliveryPrice(price);
+    setSelectedNeighborhood(neighborhood);
   };
 
   return (
@@ -128,9 +124,6 @@ const Index = () => {
         </motion.div>
 
         <motion.div 
-          variants={container}
-          initial="hidden"
-          animate="show"
           className="space-y-12"
         >
           <section>
@@ -179,7 +172,7 @@ const Index = () => {
           className="mt-12 max-w-xl mx-auto"
         >
           <DeliveryCheck
-            onDeliveryPrice={setDeliveryPrice}
+            onDeliveryPrice={handleDeliveryCheck}
             totalItems={Object.values(cart).reduce((acc, curr) => acc + curr, 0)}
           />
         </motion.div>
@@ -196,6 +189,7 @@ const Index = () => {
           return item ? { name: item.name, quantity, price: item.price } : null;
         }).filter(Boolean) as Array<{ name: string; quantity: number; price: number }>}
         deliveryPrice={deliveryPrice}
+        selectedNeighborhood={selectedNeighborhood}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
