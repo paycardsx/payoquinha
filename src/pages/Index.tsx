@@ -55,11 +55,6 @@ const MENU_ITEMS = {
   ],
 };
 
-const EXTRAS = [
-  { id: 'extra-cheese', name: 'Queijo Coalho Extra', price: 3.00 },
-  { id: 'extra-dulce', name: 'Doce de Leite Extra', price: 2.00 },
-];
-
 const Index = () => {
   const [cart, setCart] = useState<Record<number, number>>({});
   const [deliveryPrice, setDeliveryPrice] = useState(5);
@@ -81,23 +76,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-surface">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-2xl font-bold text-secondary mb-4">
-            Saboreie nossas deliciosas tapiocas!
+          <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
+            Cardápio Digital
           </h2>
-          <p className="text-text-secondary text-lg mb-4">
-            Escolha sua tapioca favorita e receba no conforto da sua casa
+          <p className="text-text-secondary text-lg mb-8">
+            Escolha suas tapiocas favoritas e receba no conforto da sua casa
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="col-span-full">
-            <h2 className="section-title">Tapiocas Salgadas</h2>
-            <div className="grid gap-6">
+        <div className="space-y-12">
+          <section>
+            <h2 className="text-2xl font-bold text-secondary mb-6 pl-4 border-l-4 border-primary">
+              Tapiocas Salgadas
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {MENU_ITEMS.salgadas.map((item) => (
                 <MenuItem
                   key={item.id}
@@ -110,11 +107,13 @@ const Index = () => {
                 />
               ))}
             </div>
-          </div>
+          </section>
 
-          <div className="col-span-full">
-            <h2 className="section-title">Tapiocas Doces</h2>
-            <div className="grid gap-6">
+          <section>
+            <h2 className="text-2xl font-bold text-secondary mb-6 pl-4 border-l-4 border-primary">
+              Tapiocas Doces
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {MENU_ITEMS.doces.map((item) => (
                 <MenuItem
                   key={item.id}
@@ -127,10 +126,10 @@ const Index = () => {
                 />
               ))}
             </div>
-          </div>
+          </section>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 max-w-xl mx-auto">
           <DeliveryCheck
             onDeliveryPrice={setDeliveryPrice}
             totalItems={Object.values(cart).reduce((acc, curr) => acc + curr, 0)}
