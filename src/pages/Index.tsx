@@ -5,6 +5,7 @@ import DeliveryCheck from '@/components/DeliveryCheck';
 import Cart from '@/components/Cart';
 import Testimonials from '@/components/Testimonials';
 import Footer from '@/components/Footer';
+import { motion } from 'framer-motion';
 
 const MENU_ITEMS = {
   salgadas: [
@@ -75,21 +76,40 @@ const Index = () => {
     });
   };
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-surface">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="text-center mb-12 animate-fade-in">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
             Cardápio Digital
           </h2>
           <p className="text-text-secondary text-lg mb-8">
             Escolha suas tapiocas favoritas e receba no conforto da sua casa
           </p>
-        </div>
+        </motion.div>
 
-        <div className="space-y-12">
+        <motion.div 
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="space-y-12"
+        >
           <section>
             <h2 className="text-2xl font-bold text-secondary mb-6 pl-4 border-l-4 border-primary">
               Tapiocas Salgadas
@@ -127,14 +147,19 @@ const Index = () => {
               ))}
             </div>
           </section>
-        </div>
+        </motion.div>
 
-        <div className="mt-12 max-w-xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 max-w-xl mx-auto"
+        >
           <DeliveryCheck
             onDeliveryPrice={setDeliveryPrice}
             totalItems={Object.values(cart).reduce((acc, curr) => acc + curr, 0)}
           />
-        </div>
+        </motion.div>
 
         <div className="mt-16">
           <Testimonials />
