@@ -78,12 +78,13 @@ const Index = () => {
     const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.name === itemName);
     if (!item) return;
 
+    const itemId = item.id.toString();
     setCart(prev => {
       if (newQuantity === 0) {
-        const { [item.id]: removed, ...rest } = prev;
+        const { [itemId]: removed, ...rest } = prev;
         return rest;
       }
-      return { ...prev, [item.id]: newQuantity };
+      return { ...prev, [itemId]: newQuantity };
     });
   };
 
@@ -91,8 +92,9 @@ const Index = () => {
     const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.name === itemName);
     if (!item) return;
 
+    const itemId = item.id.toString();
     setCart(prev => {
-      const { [item.id]: removed, ...rest } = prev;
+      const { [itemId]: removed, ...rest } = prev;
       return rest;
     });
   };
@@ -186,7 +188,7 @@ const Index = () => {
       <Cart
         items={Object.entries(cart).map(([id, quantity]) => {
           const allItems = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces];
-          const item = allItems.find(item => item.id === parseInt(id));
+          const item = allItems.find(item => item.id.toString() === id);
           return item ? { name: item.name, quantity, price: item.price } : null;
         }).filter(Boolean) as Array<{ name: string; quantity: number; price: number }>}
         deliveryPrice={deliveryPrice}
