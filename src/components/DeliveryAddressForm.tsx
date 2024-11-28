@@ -3,6 +3,7 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { NEIGHBORHOODS } from '@/lib/constants';
 import { toast } from 'sonner';
+import { Button } from './ui/button';
 
 interface DeliveryAddressFormProps {
   selectedNeighborhood: string;
@@ -116,6 +117,10 @@ const DeliveryAddressForm = ({ selectedNeighborhood, onAddressSubmit }: Delivery
           required
         />
       </div>
+
+      <Button type="submit" className="w-full">
+        Finalizar Pedido
+      </Button>
     </form>
   );
 };

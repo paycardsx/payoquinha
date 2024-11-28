@@ -6,102 +6,14 @@ import Cart from '@/components/Cart';
 import Testimonials from '@/components/Testimonials';
 import Footer from '@/components/Footer';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
-
-const MENU_ITEMS = {
-  salgadas: [
-    { 
-      id: 1, 
-      name: 'Tradicional', 
-      price: 13.20, 
-      description: 'Goma rendada de queijo / coco' 
-    },
-    { 
-      id: 2, 
-      name: 'Coco & Queijo Coalho', 
-      price: 15.20, 
-      description: 'Goma rendada de queijo / coco com queijo coalho' 
-    },
-    { 
-      id: 3, 
-      name: 'Banana & Queijo Coalho', 
-      price: 15.20, 
-      description: 'Goma rendada de queijo / banana com queijo coalho' 
-    },
-    { 
-      id: 4, 
-      name: 'Frango & Mussarela', 
-      price: 16.20, 
-      description: 'Goma rendada de queijo / frango com mussarela' 
-    },
-  ],
-  doces: [
-    { 
-      id: 5, 
-      name: 'Coco & Doce de Leite', 
-      price: 15.20, 
-      description: 'Goma rendada de queijo / coco e leite condensado' 
-    },
-    { 
-      id: 6, 
-      name: 'Morango & Doce de Leite', 
-      price: 16.20, 
-      description: 'Goma rendada de queijo / morango e leite condensado' 
-    },
-    { 
-      id: 7, 
-      name: 'Banana & Doce de Leite', 
-      price: 15.20, 
-      description: 'Goma rendada de queijo / morango e leite condensado' 
-    },
-  ],
-};
+import { useMenuItems } from '@/hooks/useMenuItems';
+import { useCart } from '@/hooks/useCart';
 
 const Index = () => {
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const { menuItems } = useMenuItems();
   const [deliveryPrice, setDeliveryPrice] = useState(5);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
-
-  const handleAddItem = (id: number) => {
-    const itemId = id.toString();
-    setCart(prev => {
-      const newCart = { ...prev, [itemId]: (prev[itemId] || 0) + 1 };
-      const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.id === id);
-      if (item) {
-        toast.success(`${item.name} adicionado ao carrinho`);
-      }
-      return newCart;
-    });
-  };
-
-  const handleUpdateQuantity = (itemName: string, newQuantity: number) => {
-    const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.name === itemName);
-    if (!item) return;
-
-    const itemId = item.id.toString();
-    setCart(prev => {
-      if (newQuantity === 0) {
-        const { [itemId]: removed, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [itemId]: newQuantity };
-    });
-  };
-
-  const handleRemoveItem = (itemName: string) => {
-    const item = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces].find(item => item.name === itemName);
-    if (!item) return;
-
-    const itemId = item.id.toString();
-    setCart(prev => {
-      const { [itemId]: removed, ...rest } = prev;
-      return rest;
-    });
-  };
-
-  const handleClearCart = () => {
-    setCart({});
-  };
+  const { cart, handleAddItem, handleUpdateQuantity, handleRemoveItem, handleClearCart } = useCart();
 
   const handleDeliveryCheck = (price: number, neighborhood: string) => {
     setDeliveryPrice(price);
@@ -126,47 +38,12 @@ const Index = () => {
           </p>
         </motion.div>
 
-        <motion.div 
-          className="space-y-12"
-        >
-          <section>
-            <h2 className="text-2xl font-bold text-secondary mb-6 pl-4 border-l-4 border-primary">
-              Tapiocas Salgadas
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {MENU_ITEMS.salgadas.map((item) => (
-                <MenuItem
-                  key={item.id}
-                  name={item.name}
-                  description={item.description}
-                  price={item.price}
-                  onAdd={() => handleAddItem(item.id)}
-                  onRemove={() => handleRemoveItem(item.id)}
-                  quantity={cart[item.id] || 0}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-secondary mb-6 pl-4 border-l-4 border-primary">
-              Tapiocas Doces
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {MENU_ITEMS.doces.map((item) => (
-                <MenuItem
-                  key={item.id}
-                  name={item.name}
-                  description={item.description}
-                  price={item.price}
-                  onAdd={() => handleAddItem(item.id)}
-                  onRemove={() => handleRemoveItem(item.id)}
-                  quantity={cart[item.id] || 0}
-                />
-              ))}
-            </div>
-          </section>
-        </motion.div>
+        <MenuSections 
+          menuItems={menuItems} 
+          onAddItem={handleAddItem} 
+          onRemoveItem={handleRemoveItem}
+          cart={cart}
+        />
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -187,7 +64,7 @@ const Index = () => {
 
       <Cart
         items={Object.entries(cart).map(([id, quantity]) => {
-          const allItems = [...MENU_ITEMS.salgadas, ...MENU_ITEMS.doces];
+          const allItems = [...menuItems.salgadas, ...menuItems.doces];
           const item = allItems.find(item => item.id.toString() === id);
           return item ? { name: item.name, quantity, price: item.price } : null;
         }).filter(Boolean) as Array<{ name: string; quantity: number; price: number }>}
