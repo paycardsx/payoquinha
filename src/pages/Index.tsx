@@ -5,6 +5,7 @@ import DeliveryCheck from '@/components/DeliveryCheck';
 import Cart from '@/components/Cart';
 import Testimonials from '@/components/Testimonials';
 import Footer from '@/components/Footer';
+import MenuSections from '@/components/MenuSections';
 import { motion } from 'framer-motion';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useCart } from '@/hooks/useCart';
