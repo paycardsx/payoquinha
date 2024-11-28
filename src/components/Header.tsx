@@ -26,7 +26,7 @@ const Header = () => {
           >
             <Clock className="inline-block h-5 w-5 animate-pulse" />
             <span className="font-medium tracking-wide">
-              Aberto de 16:45 às 21:00 (Segunda a Sábado) - Faça seu pedido dentro do horário de funcionamento! | 🚚 FRETE GRÁTIS em pedidos acima de 5 tapiocas! | 🎉 Peça agora e receba as melhores tapiocas de Maceió!
+              Aberto de 16:45 às 21:00 (Segunda a Sábado) - Faça seu pedido dentro do horário de funcionamento! | 🎉 Peça agora e receba as melhores tapiocas de Maceió! | 🚚 FRETE GRÁTIS em pedidos acima de 5 tapiocas!
             </span>
           </motion.div>
 
@@ -45,7 +45,7 @@ const Header = () => {
           >
             <Clock className="inline-block h-5 w-5 animate-pulse" />
             <span className="font-medium tracking-wide">
-              Aberto de 16:45 às 21:00 (Segunda a Sábado) - Faça seu pedido dentro do horário de funcionamento! | 🚚 FRETE GRÁTIS em pedidos acima de 5 tapiocas! | 🎉 Peça agora e receba as melhores tapiocas de Maceió!
+              Aberto de 16:45 às 21:00 (Segunda a Sábado) - Faça seu pedido dentro do horário de funcionamento! | 🎉 Peça agora e receba as melhores tapiocas de Maceió! | 🚚 FRETE GRÁTIS em pedidos acima de 5 tapiocas!
             </span>
           </motion.div>
         </div>
