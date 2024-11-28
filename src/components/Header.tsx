@@ -9,19 +9,22 @@ const Header = () => {
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white py-3 px-4 text-center font-montserrat text-sm fixed top-0 left-0 right-0 z-50 shadow-lg backdrop-blur-sm"
+        className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white py-3 px-4 text-center font-montserrat text-sm fixed top-0 left-0 right-0 z-50 shadow-lg backdrop-blur-sm overflow-hidden"
       >
         <motion.div 
-          className="container mx-auto flex items-center justify-center gap-2"
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          className="container mx-auto flex items-center justify-center gap-2 whitespace-nowrap"
+          animate={{ 
+            x: ["-100%", "0%"],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
         >
           <Clock className="inline-block h-5 w-5 animate-pulse" />
           <span className="font-medium tracking-wide">
-            Aberto de 16:45 às 21:00 (Segunda a Sábado)
-          </span>
-          <span className="hidden sm:inline-block font-light text-white/90">
-            - Faça seu pedido dentro do horário de funcionamento!
+            Aberto de 16:45 às 21:00 (Segunda a Sábado) - Faça seu pedido dentro do horário de funcionamento!
           </span>
         </motion.div>
       </motion.div>
