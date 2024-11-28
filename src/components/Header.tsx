@@ -14,7 +14,7 @@ const Header = () => {
         <motion.div 
           className="container mx-auto flex items-center justify-center gap-2 whitespace-nowrap"
           animate={{ 
-            x: ["-100%", "0%"],
+            x: ["0%", "-100%"],
           }}
           transition={{
             duration: 20,
