@@ -119,7 +119,7 @@ const DeliveryAddressForm = ({ selectedNeighborhood, onAddressSubmit }: Delivery
       </div>
 
       <Button type="submit" className="w-full">
-        Finalizar Pedido
+        Salvar Endereço
       </Button>
     </form>
   );
