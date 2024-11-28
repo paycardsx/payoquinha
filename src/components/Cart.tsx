@@ -76,6 +76,12 @@ const Cart = ({
     }
   };
 
+  const handleWhatsAppClick = () => {
+    // Implementação do envio do pedido via WhatsApp
+    console.log('Enviando pedido via WhatsApp');
+    toast.success('Redirecionando para o WhatsApp...');
+  };
+
   return (
     <AnimatePresence>
       <motion.div 
@@ -134,6 +140,7 @@ const Cart = ({
                     onPaymentMethodChange={setPaymentMethod}
                     onCashAmountChange={setCashAmount}
                     onEditAddress={() => setShowAddressForm(true)}
+                    onWhatsAppClick={handleWhatsAppClick}
                   />
                 )}
               </>

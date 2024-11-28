@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus, Minus, Star } from 'lucide-react';
 import { Button } from './ui/button';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface MenuItemProps {
   name: string;
@@ -13,6 +14,18 @@ interface MenuItemProps {
 }
 
 const MenuItem = ({ name, description, price, onAdd, onRemove, quantity }: MenuItemProps) => {
+  const handleAdd = () => {
+    onAdd();
+    toast.success(`${name} adicionado ao carrinho`);
+  };
+
+  const handleRemove = () => {
+    onRemove();
+    if (quantity === 1) {
+      toast.info(`${name} removido do carrinho`);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -64,7 +77,7 @@ const MenuItem = ({ name, description, price, onAdd, onRemove, quantity }: MenuI
               <Button
                 variant="outline"
                 size="icon"
-                onClick={onRemove}
+                onClick={handleRemove}
                 className="h-9 w-9 border-secondary hover:bg-secondary/10 rounded-full"
               >
                 <Minus className="h-4 w-4" />
@@ -73,7 +86,7 @@ const MenuItem = ({ name, description, price, onAdd, onRemove, quantity }: MenuI
             <Button
               variant="default"
               size="icon"
-              onClick={onAdd}
+              onClick={handleAdd}
               className="h-9 w-9 bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all rounded-full"
             >
               <Plus className="h-4 w-4" />
