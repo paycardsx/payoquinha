@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { ShoppingCart, X, Trash2 } from 'lucide-react';
-import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import CartContent from './CartContent';
+import CartHeader from './cart/CartHeader';
+import CartButton from './cart/CartButton';
 import DeliveryAddressForm, { DeliveryAddress } from './DeliveryAddressForm';
 import OrderSummary from './OrderSummary';
 
@@ -22,13 +22,6 @@ interface CartProps {
   onRemoveItem?: (itemName: string) => void;
   onClearCart?: () => void;
 }
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(value);
-};
 
 const Cart = ({ 
   items, 
@@ -65,7 +58,6 @@ const Cart = ({
 
   const handleClearCart = () => {
     onClearCart?.();
-    toast.info('Carrinho limpo com sucesso');
     setIsExpanded(false);
   };
 
@@ -75,49 +67,12 @@ const Cart = ({
     toast.success('Endereço de entrega salvo!');
   };
 
-  const formatOrderText = () => {
-    if (!deliveryAddress) {
-      toast.error('Por favor, preencha o endereço de entrega');
-      return null;
-    }
-
-    let text = "Olá! Gostaria de fazer um pedido:\n\n";
-    items.forEach(item => {
-      text += `${item.quantity}x ${item.name} - ${formatCurrency(item.price * item.quantity)}\n`;
-    });
-    text += `\nSubtotal: ${formatCurrency(subtotal)}`;
-    text += `\nEntrega: ${formatCurrency(deliveryPrice)}`;
-    text += `\nTotal: ${formatCurrency(total)}`;
-    text += `\n\nEndereço de entrega:`;
-    text += `\nRua: ${deliveryAddress.street}, ${deliveryAddress.number}`;
-    if (deliveryAddress.complement) {
-      text += `\nComplemento: ${deliveryAddress.complement}`;
-    }
-    text += `\nBairro: ${deliveryAddress.neighborhood}`;
-    text += `\nCEP: ${deliveryAddress.zipCode}`;
-    text += `\n\nForma de pagamento: ${paymentMethod.toUpperCase()}`;
-    if (paymentMethod === 'cash') {
-      text += `\nTroco para: ${formatCurrency(cashAmount)}`;
-      text += `\nTroco a receber: ${formatCurrency(change)}`;
-    }
-    return encodeURIComponent(text);
-  };
-
-  const handleWhatsAppClick = () => {
-    if (items.length === 0) {
-      toast.error('Adicione itens ao carrinho primeiro!');
-      return;
-    }
-
-    if (!deliveryAddress) {
-      toast.error('Por favor, preencha o endereço de entrega');
-      setShowAddressForm(true);
-      return;
-    }
-
-    const orderText = formatOrderText();
-    if (orderText) {
-      window.open(`https://wa.me/5582994150378?text=${orderText}`, '_blank');
+  const handleToggleExpand = () => {
+    setIsExpanded(!isExpanded);
+    if (!isExpanded) {
+      console.log('Expandindo carrinho');
+    } else {
+      console.log('Minimizando carrinho para continuar comprando');
     }
   };
 
@@ -144,32 +99,12 @@ const Cart = ({
             exit={{ opacity: 0, y: 20 }}
             className="animate-fade-in"
           >
-            <div className="flex items-center justify-between p-4 border-b">
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="text-primary" />
-                <h3 className="text-lg font-semibold text-secondary">Seu Pedido</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                {items.length > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleClearCart}
-                    className="hover:bg-red-50 hover:text-red-500 rounded-full"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsExpanded(false)}
-                  className="hover:bg-primary/10 rounded-full"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
+            <CartHeader
+              isExpanded={isExpanded}
+              itemCount={itemCount}
+              onClearCart={handleClearCart}
+              onToggleExpand={handleToggleExpand}
+            />
             
             {showAddressForm ? (
               <div className="p-4">
@@ -199,31 +134,13 @@ const Cart = ({
                     onPaymentMethodChange={setPaymentMethod}
                     onCashAmountChange={setCashAmount}
                     onEditAddress={() => setShowAddressForm(true)}
-                    onWhatsAppClick={handleWhatsAppClick}
                   />
                 )}
               </>
             )}
           </motion.div>
         ) : (
-          <button
-            onClick={() => setIsExpanded(true)}
-            className="w-full h-full flex items-center justify-center md:justify-between gap-2 p-2 md:p-4 text-secondary hover:bg-primary/90 transition-colors rounded-full"
-          >
-            <div className="flex items-center gap-2">
-              <ShoppingCart className="h-6 w-6 md:h-5 md:w-5" />
-              <span className="hidden md:inline font-medium">Ver Carrinho</span>
-            </div>
-            {itemCount > 0 && (
-              <motion.span 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-2 -right-2 md:relative md:top-auto md:right-auto bg-secondary text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"
-              >
-                {itemCount}
-              </motion.span>
-            )}
-          </button>
+          <CartButton itemCount={itemCount} onExpand={handleToggleExpand} />
         )}
       </motion.div>
     </AnimatePresence>
