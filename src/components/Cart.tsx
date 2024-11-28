@@ -43,20 +43,19 @@ const Cart = ({
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleUpdateQuantity = (itemName: string, newQuantity: number) => {
+    console.log('Updating quantity:', itemName, newQuantity);
     if (newQuantity < 0) return;
     onUpdateQuantity?.(itemName, newQuantity);
-    
-    if (newQuantity === 0) {
-      toast.info(`${itemName} removido do carrinho`);
-    }
   };
 
   const handleRemoveItem = (itemName: string) => {
+    console.log('Removing item:', itemName);
     onRemoveItem?.(itemName);
     toast.info(`${itemName} removido do carrinho`);
   };
 
   const handleClearCart = () => {
+    console.log('Clearing cart');
     onClearCart?.();
     setIsExpanded(false);
   };
@@ -77,7 +76,6 @@ const Cart = ({
   };
 
   const handleWhatsAppClick = () => {
-    // Implementação do envio do pedido via WhatsApp
     console.log('Enviando pedido via WhatsApp');
     toast.success('Redirecionando para o WhatsApp...');
   };

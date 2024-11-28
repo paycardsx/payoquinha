@@ -12,6 +12,22 @@ interface CartContentProps {
 }
 
 const CartContent = ({ items, onUpdateQuantity, onRemoveItem }: CartContentProps) => {
+  console.log('CartContent rendered with items:', items);
+
+  const handleIncrement = (itemName: string, currentQuantity: number) => {
+    console.log('Incrementing quantity for:', itemName);
+    onUpdateQuantity(itemName, currentQuantity + 1);
+  };
+
+  const handleDecrement = (itemName: string, currentQuantity: number) => {
+    console.log('Decrementing quantity for:', itemName);
+    if (currentQuantity > 1) {
+      onUpdateQuantity(itemName, currentQuantity - 1);
+    } else {
+      onRemoveItem(itemName);
+    }
+  };
+
   return (
     <div className="p-4 max-h-[70vh] overflow-y-auto">
       <AnimatePresence mode="popLayout">
@@ -36,7 +52,7 @@ const CartContent = ({ items, onUpdateQuantity, onRemoveItem }: CartContentProps
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 hover:bg-primary/20 rounded-full"
-                  onClick={() => onUpdateQuantity(item.name, item.quantity - 1)}
+                  onClick={() => handleDecrement(item.name, item.quantity)}
                 >
                   <Minus className="h-4 w-4 text-secondary" />
                 </Button>
@@ -45,7 +61,7 @@ const CartContent = ({ items, onUpdateQuantity, onRemoveItem }: CartContentProps
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 hover:bg-primary/20 rounded-full"
-                  onClick={() => onUpdateQuantity(item.name, item.quantity + 1)}
+                  onClick={() => handleIncrement(item.name, item.quantity)}
                 >
                   <Plus className="h-4 w-4 text-secondary" />
                 </Button>
